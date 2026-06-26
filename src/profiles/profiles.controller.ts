@@ -1,23 +1,78 @@
-import { Controller, Get, Query, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Query, Param, Post, Body, Put, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ProfilesService } from './profiles.service';
 
 @Controller('profiles')
 export class ProfilesController {
-    @Get()
-    findAll(@Query('age') age: number, @Query('location') location: string) {
-        return [{ age, location }]
+
+    constructor(private profilesService: ProfilesService) {
+
     }
+
+    @Get()
+    findAll() {
+        return this.profilesService.findAll()
+    }
+
+
+    // @Get()
+    // findAll(@Query('age') age: number, @Query('location') location: string) {
+    //     return [{ age, location }]
+    // }
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        return { id }
+        return this.profilesService.findOne(id)
     }
+
+    // @Post()
+    // create(@Body() createProfileDto: CreateProfileDto) {
+    //     return {
+    //         name: createProfileDto.name,
+    //         description: createProfileDto.description
+    //     }
+    // }
 
     @Post()
     create(@Body() createProfileDto: CreateProfileDto) {
-        return {
-            name: createProfileDto.name,
-            description: createProfileDto.description
-        }
+        return this.profilesService.createProfile(createProfileDto)
     }
+
+    // @Put(':id')
+
+    // update(
+    //     @Param('id') id: string,
+    //     @Body() updateProfileDto: UpdateProfileDto) {
+
+    //     return {
+    //         id,
+    //         name: updateProfileDto.name,
+    //         description: updateProfileDto.description
+    //     }
+
+
+    // }
+
+
+    @Put(':id')
+    update(
+        @Param('id') id: string,
+        @Body() updateProfileDto: UpdateProfileDto) {
+
+        return this.profilesService.updateProfile(id, updateProfileDto)
+    }
+
+    // @Delete(":id")
+    // @HttpCode(HttpStatus.NO_CONTENT)
+    // remove(@Param("id") id: string) {
+
+    // }
+
+    @Delete(":id")
+    @HttpCode(HttpStatus.NO_CONTENT)
+    remove(@Param("id") id: string) {
+        return this.profilesService.deleteProfile(id)
+    }
+
 }
