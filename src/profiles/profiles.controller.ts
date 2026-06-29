@@ -1,7 +1,8 @@
-import { Controller, Get, Query, Param, Post, Body, Put, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Query, Param, Post, Body, Put, Delete, HttpCode, HttpStatus, NotFoundException, ParseUUIDPipe, ValidationPipe } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ProfilesService } from './profiles.service';
+import type { UUID } from 'crypto';
 
 @Controller('profiles')
 export class ProfilesController {
@@ -16,62 +17,32 @@ export class ProfilesController {
     }
 
 
-    // @Get()
-    // findAll(@Query('age') age: number, @Query('location') location: string) {
-    //     return [{ age, location }]
-    // }
-
     @Get(':id')
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id', ParseUUIDPipe) id: UUID) {
         return this.profilesService.findOne(id)
+
+        
     }
 
-    // @Post()
-    // create(@Body() createProfileDto: CreateProfileDto) {
-    //     return {
-    //         name: createProfileDto.name,
-    //         description: createProfileDto.description
-    //     }
-    // }
 
     @Post()
     create(@Body() createProfileDto: CreateProfileDto) {
         return this.profilesService.createProfile(createProfileDto)
     }
 
-    // @Put(':id')
-
-    // update(
-    //     @Param('id') id: string,
-    //     @Body() updateProfileDto: UpdateProfileDto) {
-
-    //     return {
-    //         id,
-    //         name: updateProfileDto.name,
-    //         description: updateProfileDto.description
-    //     }
-
-
-    // }
-
 
     @Put(':id')
     update(
-        @Param('id') id: string,
+        @Param('id', ParseUUIDPipe) id: UUID,
         @Body() updateProfileDto: UpdateProfileDto) {
 
         return this.profilesService.updateProfile(id, updateProfileDto)
     }
 
-    // @Delete(":id")
-    // @HttpCode(HttpStatus.NO_CONTENT)
-    // remove(@Param("id") id: string) {
-
-    // }
 
     @Delete(":id")
     @HttpCode(HttpStatus.NO_CONTENT)
-    remove(@Param("id") id: string) {
+    remove(@Param("id", ParseUUIDPipe) id: UUID) {
         return this.profilesService.deleteProfile(id)
     }
 
